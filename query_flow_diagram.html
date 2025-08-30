@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG System Query Flow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .layer {
+            display: flex;
+            align-items: center;
+            min-height: 80px;
+            position: relative;
+        }
+        .layer-label {
+            width: 120px;
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+            text-align: right;
+            margin-right: 20px;
+        }
+        .component {
+            background: #e3f2fd;
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 0 10px;
+            flex: 1;
+            position: relative;
+        }
+        .component h3 {
+            margin: 0 0 8px 0;
+            color: #1976d2;
+            font-size: 16px;
+        }
+        .component p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .frontend { background: #e8f5e8; border-color: #4caf50; }
+        .frontend h3 { color: #4caf50; }
+        
+        .api { background: #fff3e0; border-color: #ff9800; }
+        .api h3 { color: #ff9800; }
+        
+        .rag { background: #f3e5f5; border-color: #9c27b0; }
+        .rag h3 { color: #9c27b0; }
+        
+        .ai { background: #ffebee; border-color: #f44336; }
+        .ai h3 { color: #f44336; }
+        
+        .tools { background: #e0f2f1; border-color: #009688; }
+        .tools h3 { color: #009688; }
+        
+        .vector { background: #fce4ec; border-color: #e91e63; }
+        .vector h3 { color: #e91e63; }
+        
+        .db { background: #f1f8e9; border-color: #8bc34a; }
+        .db h3 { color: #8bc34a; }
+        
+        .arrow {
+            position: absolute;
+            left: 50%;
+            bottom: -30px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 15px solid #666;
+        }
+        .arrow-up {
+            top: -30px;
+            bottom: auto;
+            border-top: none;
+            border-bottom: 15px solid #666;
+        }
+        .flow-text {
+            position: absolute;
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: #888;
+            width: 70px;
+        }
+        .data-flow {
+            background: #f5f5f5;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 10px 0;
+            font-size: 11px;
+            color: #666;
+        }
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: #1976d2;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .return-flow {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RAG System Query Flow</h1>
+        
+        <div class="flow-diagram">
+            <!-- Frontend Layer -->
+            <div class="layer">
+                <div class="layer-label">Frontend</div>
+                <div class="component frontend">
+                    <div class="step-number">1</div>
+                    <h3>Web Interface (script.js)</h3>
+                    <p>User types query → sendMessage() → Disable UI, show loading</p>
+                    <div class="data-flow">
+                        POST /api/query<br>
+                        { query: "user question", session_id: "abc123" }
+                    </div>
+                    <div class="return-flow">← Response + Sources</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="flow-text">HTTP Request</div>
+            </div>
+
+            <!-- API Layer -->
+            <div class="layer">
+                <div class="layer-label">API Layer</div>
+                <div class="component api">
+                    <div class="step-number">2</div>
+                    <h3>FastAPI Endpoint (app.py)</h3>
+                    <p>/api/query → Create/get session → Call rag_system.query()</p>
+                    <div class="data-flow">
+                        QueryRequest → QueryResponse<br>
+                        Handles session management
+                    </div>
+                    <div class="return-flow">← (answer, sources)</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="flow-text">Internal Call</div>
+            </div>
+
+            <!-- RAG System Layer -->
+            <div class="layer">
+                <div class="layer-label">RAG System</div>
+                <div class="component rag">
+                    <div class="step-number">3</div>
+                    <h3>RAG Orchestrator (rag_system.py)</h3>
+                    <p>Build prompt → Get conversation history → Call AI with tools</p>
+                    <div class="data-flow">
+                        Prompt: "Answer this question about course materials: {query}"<br>
+                        + Conversation history + Available tools
+                    </div>
+                    <div class="return-flow">← AI response</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="flow-text">AI Request</div>
+            </div>
+
+            <!-- AI Generator Layer -->
+            <div class="layer">
+                <div class="layer-label">AI Layer</div>
+                <div class="component ai">
+                    <div class="step-number">4</div>
+                    <h3>Claude API (ai_generator.py)</h3>
+                    <p>Send to Claude → If tool_use → Execute tools → Get final response</p>
+                    <div class="data-flow">
+                        Anthropic API call with system prompt + tools<br>
+                        Tool execution loop if needed
+                    </div>
+                    <div class="return-flow">← Tool results</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="flow-text">Tool Execution</div>
+            </div>
+
+            <!-- Tools Layer -->
+            <div class="layer">
+                <div class="layer-label">Tool Layer</div>
+                <div class="component tools">
+                    <div class="step-number">5</div>
+                    <h3>Search Tools (search_tools.py)</h3>
+                    <p>CourseSearchTool → Execute search → Format results → Track sources</p>
+                    <div class="data-flow">
+                        tool_manager.execute_tool("search_course_content")<br>
+                        { query, course_name?, lesson_number? }
+                    </div>
+                    <div class="return-flow">← Search results</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="flow-text">Vector Search</div>
+            </div>
+
+            <!-- Vector Store Layer -->
+            <div class="layer">
+                <div class="layer-label">Vector Store</div>
+                <div class="component vector">
+                    <div class="step-number">6</div>
+                    <h3>Vector Operations (vector_store.py)</h3>
+                    <p>Semantic search → Apply filters → Return ranked results with metadata</p>
+                    <div class="data-flow">
+                        SearchResults: documents + metadata + distances<br>
+                        Course/lesson filtering applied
+                    </div>
+                    <div class="return-flow">← Query results</div>
+                    <div class="arrow"></div>
+                </div>
+                <div class="flow-text">Database Query</div>
+            </div>
+
+            <!-- Database Layer -->
+            <div class="layer">
+                <div class="layer-label">Database</div>
+                <div class="component db">
+                    <div class="step-number">7</div>
+                    <h3>ChromaDB</h3>
+                    <p>Vector similarity search in course_content collection</p>
+                    <div class="data-flow">
+                        Embedding-based similarity search<br>
+                        Returns: docs, metadatas, distances
+                    </div>
+                    <div class="arrow arrow-up"></div>
+                </div>
+                <div class="flow-text">Data Retrieval</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+            <h3>Key Data Transformations:</h3>
+            <ul style="font-size: 14px; line-height: 1.6;">
+                <li><strong>User Query</strong> → HTTP POST → QueryRequest → RAG prompt</li>
+                <li><strong>AI Decision</strong> → Tool use request → Search parameters</li>
+                <li><strong>Vector Search</strong> → Ranked documents → Formatted results</li>
+                <li><strong>Tool Results</strong> → Claude synthesis → Final response</li>
+                <li><strong>Sources Tracking</strong> → UI display → User sees context</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #e8f4fd; border-radius: 8px;">
+            <h3>Response Flow (Steps 7→1):</h3>
+            <p style="font-size: 14px; line-height: 1.6;">
+                ChromaDB returns vectors → Vector Store formats → Search Tool adds context → 
+                Tool Manager collects → AI Generator synthesizes → RAG System packages → 
+                FastAPI responds → Frontend renders with sources
+            </p>
+        </div>
+    </div>
+</body>
+</html>
