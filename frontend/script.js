@@ -5,7 +5,7 @@ const API_URL = '/api';
 let currentSessionId = null;
 
 // DOM elements
-let chatMessages, chatInput, sendButton, totalCourses, courseTitles;
+let chatMessages, chatInput, sendButton, totalCourses, courseTitles, newChatButton;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sendButton = document.getElementById('sendButton');
     totalCourses = document.getElementById('totalCourses');
     courseTitles = document.getElementById('courseTitles');
+    newChatButton = document.getElementById('newChatButton');
     
     setupEventListeners();
     createNewSession();
@@ -29,6 +30,8 @@ function setupEventListeners() {
         if (e.key === 'Enter') sendMessage();
     });
     
+    // New chat button
+    newChatButton.addEventListener('click', createNewSession);
     
     // Suggested questions
     document.querySelectorAll('.suggested-item').forEach(button => {
@@ -117,15 +120,38 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     messageDiv.id = `message-${messageId}`;
     
     // Convert markdown to HTML for assistant messages
-    const displayContent = type === 'assistant' ? marked.parse(content) : escapeHtml(content);
+    let displayContent = type === 'assistant' ? marked.parse(content) : escapeHtml(content);
+    
+    // Post-process markdown links to open in new tabs
+    if (type === 'assistant') {
+        displayContent = displayContent.replace(/<a href="([^"]*)">/g, '<a href="$1" target="_blank" rel="noopener noreferrer">');
+    }
     
     let html = `<div class="message-content">${displayContent}</div>`;
     
     if (sources && sources.length > 0) {
+        // Debug: log the sources to see what we're getting
+        console.log('Sources received:', sources);
+        
+        // Format sources - handle both old string format and new object format
+        const formattedSources = sources.map(source => {
+            // Handle backward compatibility with string sources
+            if (typeof source === 'string') {
+                return source;
+            }
+            
+            // Handle new object format with optional links
+            if (source.link) {
+                return `<a href="${source.link}" target="_blank" class="source-link" rel="noopener noreferrer">${source.text}</a>`;
+            } else {
+                return source.text;
+            }
+        });
+        
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${formattedSources.join('')}</div>
             </details>
         `;
     }

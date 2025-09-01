@@ -179,6 +179,50 @@ class VectorStore:
             ids=ids
         )
     
+    def get_lesson_links(self, course_title: str) -> Dict[int, str]:
+        """
+        Retrieve lesson links for a specific course from the course catalog.
+        
+        Args:
+            course_title: Title of the course to look up
+            
+        Returns:
+            Dictionary mapping lesson numbers to their video URLs
+        """
+        import json
+        
+        try:
+            # Query the course catalog for this specific course
+            results = self.course_catalog.get(
+                ids=[course_title]
+            )
+            
+            if not results['metadatas'] or not results['metadatas'][0]:
+                return {}
+            
+            metadata = results['metadatas'][0]
+            lessons_json = metadata.get('lessons_json')
+            
+            if not lessons_json:
+                return {}
+            
+            # Parse the lessons JSON and create lesson number -> link mapping
+            lessons = json.loads(lessons_json)
+            lesson_links = {}
+            
+            for lesson in lessons:
+                lesson_number = lesson.get('lesson_number')
+                lesson_link = lesson.get('lesson_link')
+                
+                if lesson_number is not None and lesson_link:
+                    lesson_links[lesson_number] = lesson_link
+            
+            return lesson_links
+            
+        except Exception as e:
+            print(f"Error retrieving lesson links for course '{course_title}': {e}")
+            return {}
+    
     def clear_all_data(self):
         """Clear all data from both collections"""
         try:
