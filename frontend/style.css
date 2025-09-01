@@ -5,23 +5,25 @@
     padding: 0;
 }
 
-/* CSS Variables */
+/* CSS Variables - Happy Dark Theme */
 :root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --background: #0f172a;
-    --surface: #1e293b;
-    --surface-hover: #334155;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --border-color: #334155;
-    --user-message: #2563eb;
-    --assistant-message: #374151;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --primary-color: #a855f7; /* Bright purple */
+    --primary-hover: #9333ea; /* Deeper purple on hover */
+    --background: #1a1625; /* Warm dark purple background */
+    --surface: #2d1b4e; /* Rich purple surface */
+    --surface-hover: #3b2463; /* Lighter purple on hover */
+    --text-primary: #f8fafc; /* Bright white text */
+    --text-secondary: #d1d5db; /* Light gray for secondary text */
+    --border-color: #4c1d95; /* Purple borders */
+    --user-message: #06b6d4; /* Bright teal for user messages */
+    --assistant-message: #6366f1; /* Bright indigo for assistant */
+    --shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
     --radius: 12px;
-    --focus-ring: rgba(37, 99, 235, 0.2);
-    --welcome-bg: #1e3a5f;
-    --welcome-border: #2563eb;
+    --focus-ring: rgba(168, 85, 247, 0.3); /* Purple focus ring */
+    --welcome-bg: #4338ca; /* Vibrant indigo welcome background */
+    --welcome-border: #8b5cf6; /* Purple welcome border */
+    --accent-coral: #f472b6; /* Happy coral accent */
+    --accent-lime: #84cc16; /* Fresh lime accent */
 }
 
 /* Base Styles */
@@ -54,7 +56,7 @@ header {
 header h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-coral) 0%, var(--primary-color) 50%, var(--accent-lime) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -195,15 +197,18 @@ header h1 {
 }
 
 .message.user .message-content {
-    background: var(--user-message);
+    background: linear-gradient(135deg, var(--user-message) 0%, #0891b2 100%);
     color: white;
     border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 12px rgba(6, 182, 212, 0.3);
 }
 
 .message.assistant .message-content {
     background: var(--surface);
     color: var(--text-primary);
     border-bottom-left-radius: 4px;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
 }
 
 /* Message metadata */
@@ -334,7 +339,7 @@ header h1 {
 }
 
 .message-content blockquote {
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--accent-coral);
     padding-left: 1rem;
     margin: 0.5rem 0;
     color: var(--text-secondary);
@@ -397,7 +402,7 @@ header h1 {
 /* Send Button */
 #sendButton {
     padding: 0.75rem 1.25rem;
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-coral) 100%);
     color: white;
     border: none;
     border-radius: 24px;
@@ -407,6 +412,7 @@ header h1 {
     justify-content: center;
     transition: all 0.2s ease;
     min-width: 52px;
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
 }
 
 #sendButton:focus {
@@ -415,9 +421,9 @@ header h1 {
 }
 
 #sendButton:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: linear-gradient(135deg, var(--primary-hover) 0%, #ec4899 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
 }
 
 #sendButton:active:not(:disabled) {
@@ -439,7 +445,7 @@ header h1 {
 .loading span {
     width: 8px;
     height: 8px;
-    background: var(--text-secondary);
+    background: var(--primary-color);
     border-radius: 50%;
     animation: bounce 1.4s infinite ease-in-out both;
 }
