@@ -5,29 +5,8 @@
     padding: 0;
 }
 
-/* CSS Variables - Happy Dark Theme (Default) */
+/* CSS Variables - Light Theme Only */
 :root {
-    --primary-color: #a855f7; /* Bright purple */
-    --primary-hover: #9333ea; /* Deeper purple on hover */
-    --background: #1a1625; /* Warm dark purple background */
-    --surface: #2d1b4e; /* Rich purple surface */
-    --surface-hover: #3b2463; /* Lighter purple on hover */
-    --text-primary: #f8fafc; /* Bright white text */
-    --text-secondary: #d1d5db; /* Light gray for secondary text */
-    --border-color: #4c1d95; /* Purple borders */
-    --user-message: #06b6d4; /* Bright teal for user messages */
-    --assistant-message: #6366f1; /* Bright indigo for assistant */
-    --shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
-    --radius: 12px;
-    --focus-ring: rgba(168, 85, 247, 0.3); /* Purple focus ring */
-    --welcome-bg: #4338ca; /* Vibrant indigo welcome background */
-    --welcome-border: #8b5cf6; /* Purple welcome border */
-    --accent-coral: #f472b6; /* Happy coral accent */
-    --accent-lime: #84cc16; /* Fresh lime accent */
-}
-
-/* Light Theme Variables */
-[data-theme="light"] {
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
     --background: #ffffff;
@@ -39,9 +18,12 @@
     --user-message: #2563eb;
     --assistant-message: #f1f5f9;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
     --focus-ring: rgba(37, 99, 235, 0.2);
     --welcome-bg: #f0f8ff;
     --welcome-border: #2563eb;
+    --accent-coral: #f472b6; /* Happy coral accent */
+    --accent-lime: #84cc16; /* Fresh lime accent */
 }
 
 /* Base Styles */
@@ -525,7 +507,7 @@ header h1 {
 .new-chat-button {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: white; /* Fixed: Use white text for better visibility on blue background */
     cursor: pointer;
     padding: 0.75rem 1rem;
     border: 2px solid var(--primary-color);
@@ -543,13 +525,13 @@ header h1 {
 }
 
 .new-chat-button:focus {
-    color: var(--text-primary);
+    color: white; /* Fixed: Keep white text on focus */
     box-shadow: 0 0 0 3px var(--focus-ring), 0 4px 12px rgba(37, 99, 235, 0.4);
     transform: translateY(-1px);
 }
 
 .new-chat-button:hover {
-    color: var(--text-primary);
+    color: white; /* Fixed: Keep white text on hover */
     background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
     box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
     transform: translateY(-2px);
@@ -750,68 +732,6 @@ details[open] .suggested-header::before {
     transform: translateX(2px);
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border: 2px solid var(--border-color);
-    border-radius: 50%;
-    background: var(--surface);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.theme-toggle:hover {
-    background: var(--surface-hover);
-    border-color: var(--primary-color);
-    transform: scale(1.05);
-    box-shadow: var(--shadow);
-}
-
-.theme-toggle:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--focus-ring), var(--shadow);
-}
-
-.theme-toggle:active {
-    transform: scale(0.95);
-}
-
-/* Icon animations */
-.theme-toggle .sun-icon,
-.theme-toggle .moon-icon {
-    position: absolute;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Default state - show moon (dark theme active) */
-.theme-toggle .sun-icon {
-    opacity: 0;
-    transform: rotate(90deg) scale(0.8);
-}
-
-.theme-toggle .moon-icon {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-}
-
-/* Light theme state - show sun */
-[data-theme="light"] .theme-toggle .sun-icon {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-}
-
-[data-theme="light"] .theme-toggle .moon-icon {
-    opacity: 0;
-    transform: rotate(-90deg) scale(0.8);
-}
 
 /* Add smooth transitions to all elements */
 * {
@@ -821,7 +741,7 @@ details[open] .suggested-header::before {
 }
 
 /* Override transitions for interactive elements to be more responsive */
-button, input, .suggested-item, .theme-toggle {
+button, input, .suggested-item {
     transition-duration: 0.2s;
 }
 
@@ -868,11 +788,6 @@ button, input, .suggested-item, .theme-toggle {
     .header-content {
         flex-direction: row;
         gap: 1rem;
-    }
-    
-    .theme-toggle {
-        width: 44px;
-        height: 44px;
     }
     
     header h1 {
